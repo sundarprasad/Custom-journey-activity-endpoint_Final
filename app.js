@@ -72,6 +72,9 @@ app.post('/stop', activity.stop);
 // Test endpoint connectivity from UI
 app.post('/test-endpoint', activity.testEndpoint);
 
+// Debug endpoint to see what SFMC sends
+app.get('/debug-log', activity.debugLog);
+
 // New route to get journeys
 app.get('/journeys', activity.getJourneys);
 

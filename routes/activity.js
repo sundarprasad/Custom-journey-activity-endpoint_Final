@@ -1,14 +1,33 @@
 'use strict';
 const axios = require("axios");
 
+// In-memory log of last N SFMC calls (for debugging)
+var debugLog = [];
+function logCall(route, req) {
+    debugLog.push({
+        route: route,
+        method: req.method,
+        headers: req.headers,
+        body: req.body,
+        timestamp: new Date().toISOString()
+    });
+    if (debugLog.length > 20) debugLog.shift();
+}
+
+exports.debugLog = function (req, res) {
+    res.status(200).json(debugLog);
+};
+
 /*
  * POST Handlers for various routes
  */
 exports.edit = function (req, res) {
+    logCall('edit', req);
     res.status(200).json({ success: true });
 };
 
 exports.save = async function (req, res) {
+    logCall('save', req);
     try {
         const payload = req.body;
         await saveToDatabase(payload);
@@ -20,6 +39,7 @@ exports.save = async function (req, res) {
 };
 
 exports.execute = async function (req, res) {
+    logCall('execute', req);
     try {
         console.log('=== Execute called ===');
         console.log('Request body:', JSON.stringify(req.body, null, 2));
@@ -55,16 +75,20 @@ exports.execute = async function (req, res) {
 
 
 exports.publish = function (req, res) {
+    logCall('publish', req);
+    console.log('=== Publish called ===');
     res.status(200).json({ success: true });
 };
 
 exports.validate = function (req, res) {
+    logCall('validate', req);
     console.log('=== Validate called ===');
     console.log('Validate body:', JSON.stringify(req.body, null, 2));
     res.status(200).json({ success: true });
 };
 
 exports.stop = function (req, res) {
+    logCall('stop', req);
     res.status(200).json({ success: true });
 };
 
