@@ -42,20 +42,15 @@
 </head>
 <body>
     <div id="step1" class="step">
-        <h3>Upsert Data to DE</h3>
+        <h3>Send Data to Endpoint</h3>
         
-        <label><strong>Select Fields to Copy:</strong></label>
+        <label for="endpointUrl">Endpoint URL:</label>
+        <input type="text" id="endpointUrl" class="form-control" placeholder="https://your-api.com/receive" style="margin-bottom: 15px;">
+        
+        <label><strong>Select Fields to Send:</strong></label>
         <div id="fieldSelection" style="max-height: 200px; overflow-y: auto; border: 1px solid #ccc; padding: 10px; margin-bottom: 15px;">
             <!-- Checkboxes will be populated here -->
         </div>
-        
-        <label for="upsertKey">Upsert Key Field (for matching records):</label>
-        <select id="upsertKey" class="form-control" style="margin-bottom: 15px;">
-            <option value="">Select key field</option>
-        </select>
-        
-        <label for="destinationDE">Destination DE External Key:</label>
-        <input type="text" id="destinationDE" class="form-control" placeholder="Enter External Key">
     </div>
 
     <!-- Load your custom logic last -->

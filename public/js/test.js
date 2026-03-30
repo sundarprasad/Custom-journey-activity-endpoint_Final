@@ -48,34 +48,17 @@ connection.on('requestedSchema', function (data) {
         $fieldSelection.append(checkbox);
     });
     
-    // Populate upsert key dropdown
-    var $upsertKey = $('#upsertKey');
-    $upsertKey.find('option').not(':first').remove();
-    
-    schema.forEach(function(field) {
-        if (!field || !field.key) {
-            return;
-        }
-        
-        $upsertKey.append($('<option>', {
-            value: field.key,
-            text: field.name || field.key
-        }));
-    });
-    
     // Hydrate after populating fields
     hydrateFromExistingPayload();
 });
 
 function save() {
-    var destDE = ($('#destinationDE').val() || '').trim();
-    var upsertKey = $('#upsertKey').val();
+    var endpointUrl = ($('#endpointUrl').val() || '').trim();
     
     // Get all selected fields
     var selectedFields = {};
     $('.field-checkbox:checked').each(function() {
         var fieldKey = $(this).val(); // e.g., "Event.DEKey.email"
-        var fieldName = $(this).parent().text().trim();
         
         // Extract the actual field name from the schema key
         // If fieldKey is "Event.DEKey.email", extract "email"
@@ -85,23 +68,15 @@ function save() {
         // Store as actualFieldName: "{{Event.DEKey.FieldName}}"
         selectedFields[actualFieldName] = '{{' + fieldKey + '}}';
     });
-    
-    // Extract the upsert key field name from its schema key
-    var upsertKeyName = upsertKey;
-    if (upsertKey && upsertKey.indexOf('.') !== -1) {
-        var parts = upsertKey.split('.');
-        upsertKeyName = parts[parts.length - 1];
-    }
 
     // Initialize payload structure if not exists
     payload.arguments = payload.arguments || {};
     payload.arguments.execute = payload.arguments.execute || {};
     payload.metaData = payload.metaData || {};
 
-    // Build inArguments with field mappings
+    // Build inArguments with endpoint URL and field mappings
     payload.arguments.execute.inArguments = [{
-        destinationDE: destDE || null,
-        upsertKey: upsertKeyName || null,
+        endpointUrl: endpointUrl || null,
         fieldMappings: selectedFields
     }];
     
@@ -117,21 +92,9 @@ function hydrateFromExistingPayload() {
 
     var args = existing[0] || {};
     
-    // Restore destination DE
-    if (args.destinationDE) {
-        $('#destinationDE').val(args.destinationDE);
-    }
-    
-    // Restore upsert key - need to find the matching schema key
-    if (args.upsertKey && schema.length > 0) {
-        schema.forEach(function(field) {
-            if (!field || !field.key) return;
-            var parts = field.key.split('.');
-            var fieldName = parts[parts.length - 1];
-            if (fieldName === args.upsertKey) {
-                $('#upsertKey').val(field.key);
-            }
-        });
+    // Restore endpoint URL
+    if (args.endpointUrl) {
+        $('#endpointUrl').val(args.endpointUrl);
     }
 
     // Restore selected fields
