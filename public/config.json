@@ -11,8 +11,8 @@
     "lang": {
         "en-US": {
             "name": "Vineeth_test_api endpoint",
-            "description": "Upserts contact data to destination Data Extension.",
-            "step1Label": "Configure Data Upsert"
+            "description": "Sends contact data to an external API endpoint.",
+            "step1Label": "Configure Endpoint"
         }
     },
     "arguments": {

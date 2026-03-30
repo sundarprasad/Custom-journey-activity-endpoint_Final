@@ -59,6 +59,8 @@ exports.publish = function (req, res) {
 };
 
 exports.validate = function (req, res) {
+    console.log('=== Validate called ===');
+    console.log('Validate body:', JSON.stringify(req.body, null, 2));
     res.status(200).json({ success: true });
 };
 
