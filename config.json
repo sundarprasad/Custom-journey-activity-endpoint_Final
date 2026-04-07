@@ -23,7 +23,7 @@
         }
     },
     "configurationArguments": {
-        "applicationExtensionKey": "5f547f5d-cced-4efd-bd41-0fac1771a12b",
+        "applicationExtensionKey": "5f547f5d-cced-4efd-bd41-0fac1771a12b add",
         "save": { "url": "https://custom-journey-activity-endpointnew.vercel.app/save", "verb": "POST" },
         "publish": { "url": "https://custom-journey-activity-endpointnew.vercel.app/publish", "verb": "POST" },
         "validate": { "url": "https://custom-journey-activity-endpointnew.vercel.app/validate", "verb": "POST" }
