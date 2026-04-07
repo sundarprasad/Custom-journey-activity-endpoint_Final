@@ -94,11 +94,26 @@ function save() {
         }
     });
 
+    // SFMC requires flat key-value pairs in inArguments (no nested objects).
+    // Store each selected field and journey context field as a top-level key.
     var inArgs = {
-        endpointUrl: endpointUrl || null,
-        fieldMappings: selectedFields,
-        journeyContext: selectedJourneyFields
+        endpointUrl: endpointUrl || null
     };
+
+    // Flatten field mappings directly into inArgs
+    Object.keys(selectedFields).forEach(function(key) {
+        inArgs[key] = selectedFields[key];
+    });
+
+    // Flatten journey context fields directly into inArgs
+    Object.keys(selectedJourneyFields).forEach(function(key) {
+        inArgs[key] = selectedJourneyFields[key];
+    });
+
+    // Keep a metadata list of which keys are field mappings vs journey context
+    // so we can hydrate the UI later (stored as comma-separated strings, which are scalar)
+    inArgs._fieldMappingKeys = Object.keys(selectedFields).join(',');
+    inArgs._journeyContextKeys = Object.keys(selectedJourneyFields).join(',');
 
     payload.arguments.execute.inArguments = [inArgs];
     
@@ -119,25 +134,26 @@ function hydrateFromExistingPayload() {
         $('#endpointUrl').val(args.endpointUrl);
     }
 
-    // Restore selected fields
-    if (args.fieldMappings && typeof args.fieldMappings === 'object') {
+    // Restore selected fields (flat keys now)
+    var fieldMappingKeys = (args._fieldMappingKeys || '').split(',').filter(Boolean);
+    if (fieldMappingKeys.length > 0) {
         $('.field-checkbox').each(function() {
             var fieldKey = $(this).val();
             var parts = fieldKey.split('.');
             var fieldName = parts[parts.length - 1];
             
-            // Check if this field was previously selected
-            if (args.fieldMappings.hasOwnProperty(fieldName)) {
+            if (fieldMappingKeys.indexOf(fieldName) !== -1) {
                 $(this).prop('checked', true);
             }
         });
     }
 
-    // Restore selected journey context fields
-    if (args.journeyContext && typeof args.journeyContext === 'object') {
+    // Restore selected journey context fields (flat keys now)
+    var journeyContextKeys = (args._journeyContextKeys || '').split(',').filter(Boolean);
+    if (journeyContextKeys.length > 0) {
         $('.journey-checkbox').each(function() {
             var key = $(this).val();
-            if (args.journeyContext.hasOwnProperty(key)) {
+            if (journeyContextKeys.indexOf(key) !== -1) {
                 $(this).prop('checked', true);
             }
         });

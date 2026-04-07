@@ -47,27 +47,30 @@ exports.execute = async function (req, res) {
         const args = (req.body && req.body.inArguments && req.body.inArguments[0]) ? req.body.inArguments[0] : {};
 
         const endpointUrl = (args.endpointUrl || process.env.ENDPOINT_URL || '').trim();
-        const fieldMappings = (args.fieldMappings && typeof args.fieldMappings === 'object') ? args.fieldMappings : {};
 
-        // Extract selected journey context fields (resolved by Journey Builder at runtime)
-        const journeyContext = (args.journeyContext && typeof args.journeyContext === 'object') ? args.journeyContext : {};
+        // All fields are now flat top-level keys in inArguments.
+        // Internal metadata keys start with '_'; 'endpointUrl' is config. Everything else is payload data.
+        const reservedKeys = ['endpointUrl', '_fieldMappingKeys', '_journeyContextKeys'];
+        const endpointPayload = {};
+        Object.keys(args).forEach(function(key) {
+            if (reservedKeys.indexOf(key) === -1) {
+                endpointPayload[key] = args[key];
+            }
+        });
 
         console.log('Endpoint URL:', endpointUrl);
-        console.log('Field Mappings:', JSON.stringify(fieldMappings, null, 2));
-        console.log('Journey Context:', JSON.stringify(journeyContext, null, 2));
+        console.log('Endpoint Payload:', JSON.stringify(endpointPayload, null, 2));
 
         if (!endpointUrl) {
             console.error('Execute error: missing endpointUrl (set in UI or env ENDPOINT_URL)');
             return res.status(200).json({ success: false, error: 'Missing endpointUrl' });
         }
         
-        if (Object.keys(fieldMappings).length === 0) {
+        if (Object.keys(endpointPayload).length === 0) {
             console.error('Execute error: no fields selected');
             return res.status(200).json({ success: false, error: 'No fields selected' });
         }
 
-        // Merge field mappings with selected journey context and send to endpoint
-        const endpointPayload = Object.assign({}, fieldMappings, journeyContext);
         await postToEndpoint(endpointUrl, endpointPayload);
 
         console.log(`Successfully posted data to endpoint: ${endpointUrl}`);
