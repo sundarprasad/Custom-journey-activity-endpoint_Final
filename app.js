@@ -82,13 +82,17 @@ app.get('/journeys', activity.getJourneys);
 app.get('/activity/:uuid', activity.getActivityByUUID);
 
 // Start server locally, or export for Vercel
-if (process.env.NODE_ENV !== 'production' || !process.env.VERCEL) {
-  http.createServer(app).listen(
-    app.get('port'), function(){
-      console.log('Express server listening on port ' + app.get('port'));
-    }
-  );
-}
+// if (process.env.NODE_ENV !== 'production' || !process.env.VERCEL) {
+//   http.createServer(app).listen(
+ //    app.get('port'), function(){
+ //      console.log('Express server listening on port ' + app.get('port'));
+ //    }
+//   );
+// }
 
-// Export for Vercel
+const port = process.env.PORT || 3000;
+http.createServer(app).listen(port, '0.0.0.0', function() {
+  console.log('Express server listening on port ' + port);
+});
+ 
 module.exports = app;
