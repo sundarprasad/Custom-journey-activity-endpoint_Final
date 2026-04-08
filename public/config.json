@@ -10,7 +10,7 @@
     "type": "REST",
     "lang": {
         "en-US": {
-            "name": "Vineeth_test_api endpoint",
+            "name": "Custom_Activity_Load_Test_Final",
             "description": "Sends contact data to an external API endpoint.",
             "step1Label": "Configure Endpoint"
         }
