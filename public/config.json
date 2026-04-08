@@ -1,6 +1,6 @@
 {
     "workflowApiVersion": "1.1",
-    "key":"af850a11-4c0f-4091-a25e-3e619f270701",
+    "key":"af850a11-4c0f-4091-a25e-3e619f270100",
     "metaData": {
         "icon": "images/icon.png",
         "iconSmall": "images/iconSmall.png",
@@ -18,7 +18,7 @@
     "arguments": {
         "execute": {
             "inArguments": [],
-            "url": "https://custom-journey-activity-endpoint.vercel.app/execute",
+            "url": "https://pt2wr9qxye.us-east-1.awsapprunner.com/execute",
             "verb": "POST",
             "body": "",
             "header": "",
@@ -30,22 +30,22 @@
     "configurationArguments": {
         "applicationExtensionKey": "432d1267-809d-480f-af6e-be77b46523cf",
         "save": {
-            "url": "https://custom-journey-activity-endpoint.vercel.app/save",
+            "url": "https://pt2wr9qxye.us-east-1.awsapprunner.com/save",
             "verb": "POST",
             "useJwt": false
         },
         "publish": {
-            "url": "https://custom-journey-activity-endpoint.vercel.app/publish",
+            "url": "https://pt2wr9qxye.us-east-1.awsapprunner.com/publish",
             "verb": "POST",
             "useJwt": false
         },
         "validate": {
-            "url": "https://custom-journey-activity-endpoint.vercel.app/validate",
+            "url": "https://pt2wr9qxye.us-east-1.awsapprunner.com/validate",
             "verb": "POST",
             "useJwt": false
         },
         "stop": {
-            "url": "https://custom-journey-activity-endpoint.vercel.app/stop",
+            "url": "https://pt2wr9qxye.us-east-1.awsapprunner.com/stop",
             "verb": "POST",
             "useJwt": false
         }
