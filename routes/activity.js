@@ -3,6 +3,7 @@ const axios = require("axios");
 
 // In-memory log of last N SFMC calls (for debugging)
 var debugLog = [];
+
 function logCall(route, req) {
     debugLog.push({
         route: route,
@@ -19,8 +20,9 @@ exports.debugLog = function (req, res) {
 };
 
 /*
- * POST Handlers for various routes
+ * POST Handlers
  */
+
 exports.edit = function (req, res) {
     logCall('edit', req);
     res.status(200).json({ success: true });
@@ -40,26 +42,24 @@ exports.save = async function (req, res) {
 
 exports.execute = async function (req, res) {
     logCall('execute', req);
+
     try {
         console.log('=== Execute called ===');
         console.log('Request body:', JSON.stringify(req.body, null, 2));
-        
+
         const args = (req.body && req.body.inArguments && req.body.inArguments[0]) ? req.body.inArguments[0] : {};
 
         const endpointUrl = (args.endpointUrl || process.env.ENDPOINT_URL || '').trim();
 
-        // Collect resolved DE field values from inArguments (skip internal metadata keys)
         const reservedKeys = ['endpointUrl', '_fieldMappingKeys', '_journeyContextKeys'];
         const endpointPayload = {};
-        Object.keys(args).forEach(function(key) {
+
+        Object.keys(args).forEach(function (key) {
             if (reservedKeys.indexOf(key) === -1) {
                 endpointPayload[key] = args[key];
             }
         });
 
-        // Journey context fields are NOT in inArguments — SFMC sends them in the
-        // top-level request body automatically. Read which ones the user selected
-        // from the _journeyContextKeys metadata and pull values from req.body.
         const journeyContextMap = {
             journeyId: req.body.journeyId,
             journeyKey: req.body.keyValue,
@@ -72,7 +72,8 @@ exports.execute = async function (req, res) {
         };
 
         const selectedJourneyKeys = (args._journeyContextKeys || '').split(',').filter(Boolean);
-        selectedJourneyKeys.forEach(function(key) {
+
+        selectedJourneyKeys.forEach(function (key) {
             if (journeyContextMap[key] !== undefined && journeyContextMap[key] !== null) {
                 endpointPayload[key] = journeyContextMap[key];
             }
@@ -82,10 +83,10 @@ exports.execute = async function (req, res) {
         console.log('Endpoint Payload:', JSON.stringify(endpointPayload, null, 2));
 
         if (!endpointUrl) {
-            console.error('Execute error: missing endpointUrl (set in UI or env ENDPOINT_URL)');
+            console.error('Execute error: missing endpointUrl');
             return res.status(200).json({ success: false, error: 'Missing endpointUrl' });
         }
-        
+
         if (Object.keys(endpointPayload).length === 0) {
             console.error('Execute error: no fields selected');
             return res.status(200).json({ success: false, error: 'No fields selected' });
@@ -93,94 +94,52 @@ exports.execute = async function (req, res) {
 
         await postToEndpoint(endpointUrl, endpointPayload);
 
-        console.log(`Successfully posted data to endpoint: ${endpointUrl}`);
-        // Return with proper outArguments structure
-        return res.status(200).json({ 
+        return res.status(200).json({
             success: true,
             outArguments: [
-                {
-                    success: true
-                }
+                { success: true }
             ]
         });
+
     } catch (error) {
-        console.error('Error during endpoint POST execution:', error.response ? error.response.data : error.message);
-        return res.status(200).json({ 
+        console.error('Error during execute:', error.response ? error.response.data : error.message);
+
+        return res.status(200).json({
             success: false,
             outArguments: [
-                {
-                    success: false
-                }
+                { success: false }
             ]
         });
     }
 };
 
-
-// exports.publish = function (req, res) {
-//    logCall('publish', req);
-//    console.log('=== Publish called ===');
-    // Validate that required configuration is present
- //   if (!req.body || !req.body.arguments) {
- //       return res.status(400).json({ success: false, error: 'Missing configuration arguments' });
-//    }
- //   res.status(200).json({ success: true });
-//}; 
-
-// exports.validate = function (req, res) {
- //   logCall('validate', req);
-//    console.log('=== Validate called ===');
-//    console.log('Validate body:', JSON.stringify(req.body, null, 2));
-    
-    // Proper validation response format for Marketing Cloud
-  //  try {
-  //      if (!req.body || !req.body.arguments) {
-   //         return res.status(400).json({ 
-      //          valid: false,
-   //             errors: ['Missing configuration arguments']
-     //       });
-     //   }
-        
-     //   res.status(200).json({ 
-     //       valid: true,
-     //       errors: []
-    //    });
- //   } catch (error) {
-  //      res.status(200).json({ 
-  //          valid: false,
-   //         errors: [error.message]
-   //     });
-  //  }
-//};
-
+/*
+ * ✅ FIXED VALIDATE ENDPOINT
+ * No validation on request body — SFMC may send empty payload
+ */
 exports.validate = function (req, res) {
     logCall('validate', req);
+
     console.log('=== Validate called ===');
-    // ALWAYS return 200, but set "valid" to false inside the JSON
-    if (!req.body || !req.body.arguments) {
-        return res.status(200).json({ 
-            valid: false,
-            errors: ['Configuration is missing. Please open the activity and click Done.']
-        });
-    }
-    res.status(200).json({ 
+    console.log('Validate body:', JSON.stringify(req.body, null, 2));
+
+    return res.status(200).json({
         valid: true,
         errors: []
     });
 };
- 
+
 exports.publish = function (req, res) {
     logCall('publish', req);
+
     console.log('=== Publish called ===');
-    // Use 200 here as well to prevent the hard "Endpoint not found" error
+
     if (!req.body || !req.body.arguments) {
         return res.status(200).json({ success: false });
     }
+
     res.status(200).json({ success: true });
 };
-
-
-
 
 exports.stop = function (req, res) {
     logCall('stop', req);
@@ -188,87 +147,69 @@ exports.stop = function (req, res) {
 };
 
 /*
- * Test endpoint connectivity from the UI
+ * Test endpoint
  */
 exports.testEndpoint = async function (req, res) {
     try {
         const endpointUrl = (req.body && req.body.endpointUrl || '').trim();
+
         if (!endpointUrl) {
             return res.status(400).json({ success: false, error: 'Missing endpointUrl' });
         }
 
-        // Build a test payload using the selected field names with sample values
         const fields = (req.body.fields && Array.isArray(req.body.fields)) ? req.body.fields : [];
         const testPayload = {};
+
         fields.forEach(function (field) {
             testPayload[field] = 'test_' + field;
         });
 
-        // Fallback if no fields selected
         if (Object.keys(testPayload).length === 0) {
             testPayload.test = true;
             testPayload.timestamp = new Date().toISOString();
         }
-
-        console.log('Test endpoint payload:', JSON.stringify(testPayload, null, 2));
 
         const response = await axios.post(endpointUrl, testPayload, {
             headers: { 'Content-Type': 'application/json' },
             timeout: 10000
         });
 
-        return res.status(200).json({ success: true, status: response.status, response: response.data });
+        return res.status(200).json({
+            success: true,
+            status: response.status,
+            response: response.data
+        });
+
     } catch (error) {
         const msg = error.response
             ? `${error.response.status} - ${JSON.stringify(error.response.data)}`
             : error.message;
-        return res.status(200).json({ success: false, error: msg });
+
+        return res.status(200).json({
+            success: false,
+            error: msg
+        });
     }
 };
 
 /*
- * Function to POST data to an external endpoint
+ * Helper: POST to external endpoint
  */
 async function postToEndpoint(endpointUrl, fieldMappings) {
     console.log('Posting to endpoint:', endpointUrl);
     console.log('Payload:', JSON.stringify(fieldMappings, null, 2));
 
     const response = await axios.post(endpointUrl, fieldMappings, {
-        headers: {
-            'Content-Type': 'application/json'
-        },
+        headers: { 'Content-Type': 'application/json' },
         timeout: 10000
     });
 
-    console.log('Endpoint response status:', response.status);
-    console.log('Endpoint response data:', JSON.stringify(response.data, null, 2));
+    console.log('Endpoint response:', response.status, response.data);
     return response.data;
 }
 
 /*
- * GET Handler for /journeys route
- */
-exports.getJourneys = async function (req, res) {
-    res.status(404).json({ error: 'Not implemented in DE copy mode' });
-}
-
-/*
- * Function to retrieve journeys
- */
-async function fetchJourneys() {
-    throw new Error('Not implemented');
-}
-
-/*
- * Handler to get activity data by UUID
- */
-exports.getActivityByUUID = async function (req, res) {
-    res.status(404).send('Not implemented in DE copy mode');
-}
-
-
-/*
- * Function to save data to the database
+ * Placeholder DB function
  */
 async function saveToDatabase() {
     return;
