@@ -10,7 +10,7 @@
     "type": "REST",
     "lang": {
         "en-US": {
-            "name": "Vineeth_test_api endpoint",
+            "name": "LOad_test_api endpoint",
             "description": "Sends contact data to an external API endpoint.",
             "step1Label": "Configure Endpoint"
         }
@@ -19,14 +19,14 @@
         "execute": {
             "inArguments": [],
             "outArguments": [],
-            "url": "https://custom-journey-activity-endpointnew.vercel.app/execute"
+            "url": "https://pt2wr9qxye.us-east-1.awsapprunner.com/execute"
         }
     },
     "configurationArguments": {
-        "applicationExtensionKey": "5f547f5d-cced-4efd-bd41-0fac1771a12b add",
-        "save": { "url": "https://custom-journey-activity-endpointnew.vercel.app/save", "verb": "POST" },
-        "publish": { "url": "https://custom-journey-activity-endpointnew.vercel.app/publish", "verb": "POST" },
-        "validate": { "url": "https://custom-journey-activity-endpointnew.vercel.app/validate", "verb": "POST" }
+        "applicationExtensionKey": "ffba5052-98e6-4983-815f-a5c9035393b9",
+        "save": { "url": "https://pt2wr9qxye.us-east-1.awsapprunner.com/save", "verb": "POST" },
+        "publish": { "url": "https://pt2wr9qxye.us-east-1.awsapprunner.com/publish", "verb": "POST" },
+        "validate": { "url": "https://pt2wr9qxye.us-east-1.awsapprunner.com/validate", "verb": "POST" }
     },
     "userInterfaces": {
         "configInspector": {
