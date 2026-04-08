@@ -52,7 +52,7 @@
     },
     "userInterfaces": {
         "configModal": {
-            "url": ""https://pt2wr9qxye.us-east-1.awsapprunner.com/index.html",
+            "url": "https://pt2wr9qxye.us-east-1.awsapprunner.com/index.html",
             "height": 600,
             "width": 700,
             "fullscreen": false
