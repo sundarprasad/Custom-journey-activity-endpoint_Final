@@ -117,41 +117,70 @@ exports.execute = async function (req, res) {
 };
 
 
-exports.publish = function (req, res) {
-    logCall('publish', req);
-    console.log('=== Publish called ===');
+// exports.publish = function (req, res) {
+//    logCall('publish', req);
+//    console.log('=== Publish called ===');
     // Validate that required configuration is present
-    if (!req.body || !req.body.arguments) {
-        return res.status(400).json({ success: false, error: 'Missing configuration arguments' });
-    }
-    res.status(200).json({ success: true });
-};
+ //   if (!req.body || !req.body.arguments) {
+ //       return res.status(400).json({ success: false, error: 'Missing configuration arguments' });
+//    }
+ //   res.status(200).json({ success: true });
+//}; 
+
+// exports.validate = function (req, res) {
+ //   logCall('validate', req);
+//    console.log('=== Validate called ===');
+//    console.log('Validate body:', JSON.stringify(req.body, null, 2));
+    
+    // Proper validation response format for Marketing Cloud
+  //  try {
+  //      if (!req.body || !req.body.arguments) {
+   //         return res.status(400).json({ 
+      //          valid: false,
+   //             errors: ['Missing configuration arguments']
+     //       });
+     //   }
+        
+     //   res.status(200).json({ 
+     //       valid: true,
+     //       errors: []
+    //    });
+ //   } catch (error) {
+  //      res.status(200).json({ 
+  //          valid: false,
+   //         errors: [error.message]
+   //     });
+  //  }
+//};
 
 exports.validate = function (req, res) {
     logCall('validate', req);
     console.log('=== Validate called ===');
-    console.log('Validate body:', JSON.stringify(req.body, null, 2));
-    
-    // Proper validation response format for Marketing Cloud
-    try {
-        if (!req.body || !req.body.arguments) {
-            return res.status(400).json({ 
-                valid: false,
-                errors: ['Missing configuration arguments']
-            });
-        }
-        
-        res.status(200).json({ 
-            valid: true,
-            errors: []
-        });
-    } catch (error) {
-        res.status(200).json({ 
+    // ALWAYS return 200, but set "valid" to false inside the JSON
+    if (!req.body || !req.body.arguments) {
+        return res.status(200).json({ 
             valid: false,
-            errors: [error.message]
+            errors: ['Configuration is missing. Please open the activity and click Done.']
         });
     }
+    res.status(200).json({ 
+        valid: true,
+        errors: []
+    });
 };
+ 
+exports.publish = function (req, res) {
+    logCall('publish', req);
+    console.log('=== Publish called ===');
+    // Use 200 here as well to prevent the hard "Endpoint not found" error
+    if (!req.body || !req.body.arguments) {
+        return res.status(200).json({ success: false });
+    }
+    res.status(200).json({ success: true });
+};
+
+
+
 
 exports.stop = function (req, res) {
     logCall('stop', req);
