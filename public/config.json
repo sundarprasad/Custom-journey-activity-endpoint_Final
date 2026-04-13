@@ -1,6 +1,6 @@
 {
     "workflowApiVersion": "1.1",
-    "key":"af850a11-4c0f-4091-a25e-3e619f270100",
+    "key": "af850a11-4c0f-4091-a25e-3e619f270100",
     "metaData": {
         "icon": "images/icon.png",
         "iconSmall": "images/iconSmall.png",
@@ -11,20 +11,37 @@
     "lang": {
         "en-US": {
             "name": "Custom_Activity_Load_Test_Final",
-            "description": "Sends contact data to an external API endpoint.",
-            "step1Label": "Configure Endpoint"
+            "description": "Sends contact + journey data to external API",
+            "step1Label": "Configure Activity"
         }
     },
     "arguments": {
         "execute": {
-            "inArguments": [],
+            "inArguments": [
+                {
+                    "ContactKey": "{{Contact.Key}}",
+                    "EmailAddress": "{{Contact.Default.Email}}",
+
+                    "EventData": "{{Event}}",
+
+                    "journeyContext": {
+                        "activityId": "{{Context.ActivityId}}",
+                        "activityKey": "{{Context.ActivityKey}}",
+                        "activityName": "{{Context.ActivityName}}",
+                        "definitionInstanceId": "{{Context.DefinitionInstanceId}}",
+                        "activityInstanceId": "{{Context.ActivityInstanceId}}",
+                        "journeyId": "{{Context.JourneyId}}",
+                        "journeyVersionId": "{{Context.JourneyVersionId}}"
+                    }
+                }
+            ],
             "url": "https://hriuyanrpa.us-east-1.awsapprunner.com/execute",
             "verb": "POST",
             "body": "",
             "header": "",
             "format": "json",
             "useJwt": false,
-            "timeout": 10000
+            "timeout": 20000
         }
     },
     "configurationArguments": {
@@ -61,7 +78,22 @@
     "schema": {
         "arguments": {
             "execute": {
-                "inArguments": [],
+                "inArguments": [
+                    {
+                        "ContactKey": "Text",
+                        "EmailAddress": "Text",
+                        "EventData": "Text",
+                        "journeyContext": {
+                            "activityId": "Text",
+                            "activityKey": "Text",
+                            "activityName": "Text",
+                            "definitionInstanceId": "Text",
+                            "activityInstanceId": "Text",
+                            "journeyId": "Text",
+                            "journeyVersionId": "Text"
+                        }
+                    }
+                ],
                 "outArguments": []
             }
         }
