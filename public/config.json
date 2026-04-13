@@ -18,7 +18,7 @@
     "arguments": {
         "execute": {
             "inArguments": [],
-            "url": "https://hriuyanrpa.us-east-1.awsapprunner.com/execute",
+            "url": "https://ppvevagph2.us-east-1.awsapprunner.com/execute",
             "verb": "POST",
             "body": "",
             "header": "",
@@ -30,29 +30,29 @@
     "configurationArguments": {
         "applicationExtensionKey": "a6f03875-2b56-4770-a639-0c8205cbf266",
         "save": {
-            "url": "https://hriuyanrpa.us-east-1.awsapprunner.com/save",
+            "url": "https://ppvevagph2.us-east-1.awsapprunner.com/save",
             "verb": "POST",
             "useJwt": false
         },
         "publish": {
-            "url": "https://hriuyanrpa.us-east-1.awsapprunner.com/publish",
+            "url": "https://ppvevagph2.us-east-1.awsapprunner.com/publish",
             "verb": "POST",
             "useJwt": false
         },
         "validate": {
-            "url": "https://hriuyanrpa.us-east-1.awsapprunner.com/validate",
+            "url": "https://ppvevagph2.us-east-1.awsapprunner.com/validate",
             "verb": "POST",
             "useJwt": false
         },
         "stop": {
-            "url": "https://hriuyanrpa.us-east-1.awsapprunner.com/stop",
+            "url": "https://ppvevagph2.us-east-1.awsapprunner.com/stop",
             "verb": "POST",
             "useJwt": false
         }
     },
     "userInterfaces": {
         "configModal": {
-            "url": "https://hriuyanrpa.us-east-1.awsapprunner.com/index.html",
+            "url": "https://ppvevagph2.us-east-1.awsapprunner.com/index.html",
             "height": 600,
             "width": 700,
             "fullscreen": false
